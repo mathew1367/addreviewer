@@ -108,13 +108,15 @@ add_action('save_post_product', 'cwpai_save_product_review_meta_box');
 // Only allow admin users to see and use this feature
 
 function cwpai_restrict_product_review_access() {
+    $user = wp_get_current_user();
 
-    if (!current_user_can('administrator')) {
-
-        wp_die('You do not have permission to access this feature.');
-
+    // اگر کاربر مدیر است یا نویسنده است یا ویراستار است یا مدیر فروشگاه است
+    if (user_can($user, 'administrator') || user_can($user, 'editor') || user_can($user, 'author') || user_can($user, 'shop_manager')) {
+        return; // کاربر می‌تواند وارد شود
     }
 
+    // در غیر اینصورت، پیام خطا را نمایش می‌دهیم
+    wp_die('You do not have permission to access this feature.');
 }
 
 add_action('admin_init', 'cwpai_restrict_product_review_access');
